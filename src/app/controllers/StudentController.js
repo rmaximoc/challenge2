@@ -17,6 +17,12 @@ class StudentController {
       return res.status(400).json({ error: 'Validation failed' });
     }
 
+    const { admin } = req.body;
+
+    if (!admin) {
+      return res.status(401).json({ error: 'You are not a admin user' });
+    }
+
     const userExists = await Student.findOne({
       where: { email: req.body.email },
     });
@@ -25,7 +31,7 @@ class StudentController {
       return res.status(400).json({ error: 'Student already exists' });
     }
 
-    const { id, name, email, admin } = await Student.create(req.body);
+    const { id, name, email } = await Student.create(req.body);
 
     return res.json({
       id,
