@@ -13,14 +13,12 @@ class StudentController {
       height: Yup.number().required(),
     });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validation failed' });
+    if (!req.header) {
+      return res.status(400).json({ error: "You're not authorized to do it" });
     }
 
-    const { admin } = req.body;
-
-    if (!admin) {
-      return res.status(401).json({ error: 'You are not a admin user' });
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation failed' });
     }
 
     const userExists = await Student.findOne({
@@ -37,7 +35,6 @@ class StudentController {
       id,
       name,
       email,
-      admin,
     });
   }
 
@@ -66,9 +63,9 @@ class StudentController {
       }
     }
 
-    const { id, name, admin } = await user.update(req.body);
+    const { id, name } = await user.update(req.body);
 
-    return res.json({ id, name, email, admin });
+    return res.json({ id, name, email });
   }
 }
 
